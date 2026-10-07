@@ -7,6 +7,9 @@
  */
 
 #include "JsEnvModule.h"
+#include "Misc/FileHelper.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 //#include "TGameJSCorePCH.h"
 #include "HAL/MemoryBase.h"
 #include "NamespaceDef.h"
@@ -226,6 +229,20 @@ void FJsEnvModule::StartupModule()
     v8::V8::InitializePlatform(platform_.get());
 #endif
     v8::V8::Initialize();
+    FString BenchTelemetryPath;
+    if (FParse::Value(FCommandLine::Get(), TEXT("BenchRuntimeTelemetry="), BenchTelemetryPath))
+    {
+#ifdef WITH_V8_FAST_CALL
+        const TCHAR* BenchFastCall = TEXT("true");
+#else
+        const TCHAR* BenchFastCall = TEXT("false");
+#endif
+        const FString BenchTelemetry = FString::Printf(
+            TEXT("{\"v8_version\":\"%s\",\"fast_call_compiled\":%s,\"source\":\"v8::V8::GetVersion\"}"),
+            UTF8_TO_TCHAR(v8::V8::GetVersion()), BenchFastCall);
+        FFileHelper::SaveStringToFile(BenchTelemetry, *BenchTelemetryPath);
+    }
+
 
 #if defined(WITH_NODEJS)
     int Argc = 1;

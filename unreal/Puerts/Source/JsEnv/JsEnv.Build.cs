@@ -22,7 +22,7 @@ public class JsEnv : ModuleRules
 
     private SupportedV8Versions UseV8Version = 
 #if UE_4_25_OR_LATER
-        SupportedV8Versions.V9_4_146_24;
+        SupportedV8Versions.V11_8_172;
 #else
         SupportedV8Versions.VDeprecated;
 #endif
@@ -57,7 +57,7 @@ public class JsEnv : ModuleRules
     public JsEnv(ReadOnlyTargetRules Target) : base(Target)
     {
         PublicDefinitions.Add("USING_IN_UNREAL_ENGINE");
-        //PublicDefinitions.Add("WITH_V8_FAST_CALL");
+        PublicDefinitions.Add("WITH_V8_FAST_CALL");
         
         PublicDefinitions.Add("TS_BLUEPRINT_PATH=\"/Blueprints/TypeScript/\"");
         
