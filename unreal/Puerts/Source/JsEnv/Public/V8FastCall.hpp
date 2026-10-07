@@ -56,7 +56,9 @@ struct FastCallArgument<T, typename std::enable_if<std::is_enum<T>::value>::type
 };
 
 template <typename T>
-struct FastCallArgument<T, typename std::enable_if<std::is_integral<T>::value || std::is_floating_point<T>::value>::type>
+// Conservatively keep narrow integer signatures on the normal bridge:
+// V8 has no 16-bit mapping and does not support an 8-bit fast-call return.
+struct FastCallArgument<T, typename std::enable_if<(std::is_integral<T>::value && sizeof(T) >= 4) || std::is_floating_point<T>::value>::type>
 {
     using DeclType = typename std::decay<T>::type;
 
@@ -143,7 +145,7 @@ struct IsReturnSupportedHelper<T,
 };
 
 template <typename T>
-struct IsReturnSupportedHelper<T, typename std::enable_if<std::is_integral<T>::value && sizeof(T) < 8>::type> : std::true_type
+struct IsReturnSupportedHelper<T, typename std::enable_if<std::is_integral<T>::value && (sizeof(T) == 4 || std::is_same<T, bool>::value)>::type> : std::true_type
 {
 };
 

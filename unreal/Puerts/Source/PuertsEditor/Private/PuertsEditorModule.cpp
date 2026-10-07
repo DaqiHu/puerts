@@ -16,8 +16,10 @@
 #include "SourceFileWatcher.h"
 #include "JSLogger.h"
 #include "JSModuleLoader.h"
+THIRD_PARTY_INCLUDES_START
 #include "Binding.hpp"
 #include "UEDataBinding.hpp"
+THIRD_PARTY_INCLUDES_END
 #include "Object.hpp"
 #include "PString.h"
 
